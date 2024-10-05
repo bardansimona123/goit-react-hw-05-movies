@@ -1,31 +1,25 @@
-// src/components/Home.jsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { fetchTrendingMovies } from "../api";
+import styles from './Home.module.css';
 
-const Home = () => {
+export const Home = () => {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    // Înlocuiește cu apelul tău API pentru a obține filmele pe care le vizionezi
-    const fetchMovies = async () => {
-      const response = await fetch('API_URL_FOR_CURRENT_MOVIES'); // Aici trebuie să înlocuiești cu URL-ul tău
-      const data = await response.json();
-      setMovies(data.results); // Asigură-te că structurezi corect datele
-    };
-
-    fetchMovies();
+    fetchTrendingMovies().then(setMovies);
   }, []);
 
   return (
     <div>
-      <h1>Filmele pe care le vizionez acum</h1>
-      <ul>
+      <h1 className={styles.title}>Trending Today</h1>
+      <ul className={styles.movieList}>
         {movies.map(movie => (
-          <li key={movie.id}>{movie.title}</li> // Aici afișezi titlul filmului
+          <li key={movie.id} className={styles.movieItem}>
+            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+          </li>
         ))}
       </ul>
     </div>
   );
 };
-
-export default Home;
-

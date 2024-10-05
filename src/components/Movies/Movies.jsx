@@ -1,36 +1,36 @@
-// src/components/Movies.jsx
-import React, { useState } from 'react';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { searchMovies } from "../api";
+import styles from './Movies.module.css';
 
-const Movies = () => {
-  const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+export const Movies = () => {
+  const [query, setQuery] = useState("");
+  const [movies, setMovies] = useState([]);
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    const response = await fetch(`API_URL_FOR_SEARCH_MOVIES?query=${query}`); // Aici trebuie să înlocuiești cu URL-ul tău
-    const data = await response.json();
-    setSearchResults(data.results); // Asigură-te că structurezi corect datele
+    searchMovies(query).then(setMovies);
   };
 
   return (
     <div>
-      <h1>Caută Filme</h1>
-      <form onSubmit={handleSearch}>
+      <form onSubmit={handleSearch} className={styles.searchForm}>
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Caută un film"
+          placeholder="Search for a movie..."
+          className={styles.searchInput}
         />
-        <button type="submit">Search</button>
+        <button type="submit" className={styles.searchButton}>Search</button>
       </form>
-      <ul>
-        {searchResults.map(movie => (
-          <li key={movie.id}>{movie.title}</li> // Aici afișezi titlul filmului
+      <ul className={styles.movieList}>
+        {movies.map(movie => (
+          <li key={movie.id} className={styles.movieItem}>
+            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+          </li>
         ))}
       </ul>
     </div>
   );
 };
-
-export default Movies;

@@ -1,29 +1,33 @@
-// src/components/App.jsx
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import './App.module.css';
+import { Route, Routes, NavLink } from "react-router-dom";
+import { Home } from "./Home/Home";
+import { Movies } from "./Movies/Movies";
+import { MovieDetails } from "./MovieDetails/MovieDetails";
+import { Cast } from "./Cast/Cast";    // Import Cast component
+import { Reviews } from "./Reviews/Reviews";  // Import Reviews component
+import styles from './App.module.css';
 
-const Home = lazy(() => import('./Home/Home'));
-const Movies = lazy(() => import('./Movies/Movies'));
-const MovieDetails = lazy(() => import('./MovieDetails/MovieDetails'));
-const Cast = lazy(() => import('./Cast/Cast'));
-const Reviews = lazy(() => import('./Reviews/Reviews'));
-
-const App = () => {
+export const App = () => {
   return (
-    <Router>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/movies" element={<Movies />} />
-          <Route path="/movies/:movieId" element={<MovieDetails />} />
-          <Route path="/movies/:movieId/cast" element={<Cast />} />
-          <Route path="/movies/:movieId/reviews" element={<Reviews />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Suspense>
-    </Router>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <nav>
+          <NavLink to="/" end className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
+            Home
+          </NavLink>
+          <NavLink to="/movies" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
+            Movies
+          </NavLink>
+        </nav>
+      </header>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/movies" element={<Movies />} />
+        <Route path="/movies/:movieId" element={<MovieDetails />}>
+          {/* Add nested routes for Cast and Reviews */}
+          <Route path="cast" element={<Cast />} />
+          <Route path="reviews" element={<Reviews />} />
+        </Route>
+      </Routes>
+    </div>
   );
 };
-
-export default App;
